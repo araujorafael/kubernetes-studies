@@ -1,0 +1,42 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: "frontend"
+spec:
+  selector:
+    app: "frontend"
+  ports:
+    - protocol: "TCP"
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: frontend
+        track: stable
+    spec:
+      containers:
+        - name: nginx
+          image: "nginx:1.9.14"
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/usr/sbin/nginx","-s","quit"]
+          volumeMounts:
+            - name: "nginx-frontend-conf"
+              mountPath: "/etc/nginx/conf.d"
+      volumes:
+        - name: "nginx-frontend-conf"
+          configMap:
+            name: "nginx-frontend-conf"
+            items:
+              - key: "frontend.conf"
+                path: "frontend.conf"
