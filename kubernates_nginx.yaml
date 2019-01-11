@@ -22,6 +22,7 @@ spec:
       labels:
         app: frontend
         track: stable
+        tier: frontend
     spec:
       containers:
         - name: nginx

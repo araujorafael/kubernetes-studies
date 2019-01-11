@@ -24,11 +24,9 @@ spec:
     spec:
       containers:
         - name: hello
-          image: "udacity/example-hello:1.0.0"
+          image: "askilos/kubernates-app:latest"
           ports:
             - name: http
-              containerPort: 8080
-            - name: health
               containerPort: 8080
           resources:
             limits:

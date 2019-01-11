@@ -3,8 +3,8 @@ FROM golang:latest
 
 ENV GOBIN /go/bin
 
-COPY . /go/src/CoursesTest
-WORKDIR /go/src/CoursesTest
+COPY . /go/src/kubernatesApp
+WORKDIR /go/src/kubernatesApp
 
 # Go dep!
 RUN go get -u github.com/golang/dep/cmd/dep
@@ -15,13 +15,11 @@ RUN CGO_ENABLED=0 go build -a -installsuffix nocgo -o /go/bin/main
 
 FROM alpine
 
-EXPOSE 3000
+EXPOSE 8080
 
 
 RUN mkdir -p /app/
 COPY --from=0 /go/bin/main /app
-COPY --from=0 /go/bin/dlv /app
-COPY ./config.yml /app/
 
 WORKDIR /app
-CMD ["main"]
+CMD ["/app/main"]
