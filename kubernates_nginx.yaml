@@ -9,7 +9,7 @@ spec:
     - protocol: "TCP"
       port: 80
       targetPort: 80
-  type: LoadBalancer
+  type: NodePort 
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: "nginx:1.9.14"
+          image: "nginx:1.17.4-alpine"
           lifecycle:
             preStop:
               exec:
@@ -41,3 +41,26 @@ spec:
             items:
               - key: "frontend.conf"
                 path: "frontend.conf"
+
+---
+apiVersion: v1
+data:
+  frontend.conf: |
+    upstream hello {
+        server hello:8080;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://hello;
+        }
+    }
+kind: ConfigMap
+metadata:
+  namespace: default
+              
+                
+
+                
